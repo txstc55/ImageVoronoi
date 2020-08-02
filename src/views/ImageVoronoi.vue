@@ -19,14 +19,15 @@
 
 <script>
 import PrepImage from "@/voronoi/ImageGradient.js";
-// import { Delaunay } from "d3-delaunay";
+import ChoosePoint from "@/voronoi/ChoosePoints.js";
 import Voronoi from "voronoi";
 export default {
   name: "ImageVoronoi",
   data: function() {
     return {
       canvas: null,
-      img: null
+      img: null,
+      sites: []
     };
   },
   methods: {
@@ -36,23 +37,6 @@ export default {
       this.img = new Image();
       this.img.src = src;
       this.drawImg();
-      // const points = [
-      //   [0, 0],
-      //   [0, 1],
-      //   [1, 0],
-      //   [1, 1]
-      // ];
-      // const delaunay = Delaunay.from(points);
-      // const voronoi = delaunay.voronoi([0, 0, 960, 500]);
-      // console.log(voronoi);
-      const voronoi = new Voronoi();
-      const bbox = { xl: 0, xr: 100, yt: 0, yb: 100 }; // xl is x-left, xr is x-right, yt is y-top, and yb is y-bottom
-      const sites = [
-        { x: 50, y: 50 },
-        { x: 52, y: 52 },
-      ];
-      const diagram = voronoi.compute(sites, bbox);
-      console.log(diagram.cells);
     },
 
     // function to draw the stored image file
@@ -71,8 +55,46 @@ export default {
           this.canvas.width
         );
         ctx.drawImage(this.img, 0, 0);
-        const gray = new PrepImage(this.canvas);
-        gray.grayScale();
+        const grad = new PrepImage(this.canvas);
+        var tmp = grad.sobelFilter();
+        // grad.display(tmp);
+        var cp = new ChoosePoint(
+          tmp,
+          this.canvas.width,
+          this.canvas.height,
+          200
+        );
+        var pos = cp.pickPosition();
+        console.log(pos);
+        const voronoi = new Voronoi();
+        const bbox = {
+          xl: 0,
+          xr: this.canvas.width,
+          yt: 0,
+          yb: this.canvas.height
+        }; // xl is x-left, xr is x-right, yt is y-top, and yb is y-bottom
+        var sites = [];
+        for (var i = 0; i < pos.length; i++) {
+          sites.push({ x: pos[i][0], y: pos[i][1] });
+        }
+        const diagram = voronoi.compute(sites, bbox);
+        console.log(diagram.cells.length);
+        for (i = 0; i < diagram.cells.length; i++) {
+          // console.log(diagram.cells[i]);
+        //   const site = diagram.cells[i].site;
+          // console.log(site);
+
+          for (var j = 0; j < diagram.cells[i].halfedges.length; j++) {
+            ctx.beginPath();
+            const va = diagram.cells[i].halfedges[j].edge.va;
+            const vb = diagram.cells[i].halfedges[j].edge.vb;
+            // console.log(va);
+            ctx.moveTo(va.x, va.y);
+            ctx.lineTo(vb.x, vb.y);
+            // ctx.closePath();
+            ctx.stroke();
+          }
+        }
       };
     },
 
