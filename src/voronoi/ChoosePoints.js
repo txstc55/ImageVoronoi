@@ -1,4 +1,4 @@
-let Chance = require("chance");
+// let Chance = require("chance");
 class ChoosePoint {
     constructor(imgData, width, height, n) {
         this.imgData = new Array(width * height);
@@ -6,7 +6,7 @@ class ChoosePoint {
         this.width = width;
         this.height = height;
         for (var i = 0; i < imgData.length; i += 4) {
-            this.imgData[i/4] = imgData[i];
+            this.imgData[i / 4] = imgData[i] + 1;
         }
     }
 
@@ -15,8 +15,9 @@ class ChoosePoint {
         const weight = this.imgData[ind];
         const y = Math.floor(ind / this.width);
         const x = ind % this.width;
-        for (var i = y - weight; i < y + weight; i++) {
-            for (var j = x - weight; j < x + weight; j++) {
+        const radius = Math.log2(weight) + 1;
+        for (var i = y - radius; i <= y + radius; i++) {
+            for (var j = x - radius; j <= x + radius; j++) {
                 if (i >= 0 && j >= 0 && j < this.width && i < this.height) {
                     var pos = i * this.width + j;
                     this.imgData[pos] /= 2;
@@ -30,14 +31,21 @@ class ChoosePoint {
         for (var i = 0; i < this.imgData.length; i++) {
             all_pos[i] = i;
         }
-        var choices = [];
-        var chance = new Chance();
-        for (i = 0; i < this.n; i++) {
-            var selected = chance.weighted(all_pos, this.imgData);
-            choices.push([selected % this.width, Math.floor(selected / this.width)]);
-            this.scaleDown(i);
+        var choices = new Set([]);
+        while (choices.size < this.n) {
+            // return a random index
+            var selected = Math.floor(Math.random()*this.imgData.length);
+            // now we determine wheater to discard it
+            const selected_pos_val = this.imgData[selected];
+            if (Math.random()*256<=selected_pos_val){
+                // we choose it
+                // console.log(selected_pos_val);
+                choices.add([selected % this.width, Math.floor(selected / this.width)]);
+                this.scaleDown(selected);
+            }
+            // else we dont care about this point
         }
-        return choices;
+        return Array.from(choices);
     }
 
 
