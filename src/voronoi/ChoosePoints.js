@@ -15,12 +15,12 @@ class ChoosePoint {
         const weight = this.imgData[ind];
         const y = Math.floor(ind / this.width);
         const x = ind % this.width;
-        const radius = Math.log2(weight) + 1;
+        const radius = Math.max(Math.log2(weight) + 1, 1);
         for (var i = y - radius; i <= y + radius; i++) {
             for (var j = x - radius; j <= x + radius; j++) {
                 if (i >= 0 && j >= 0 && j < this.width && i < this.height) {
                     var pos = i * this.width + j;
-                    this.imgData[pos] /= 2;
+                    this.imgData[pos] /= radius;
                 }
             }
         }
@@ -34,13 +34,13 @@ class ChoosePoint {
         var choices = new Set([]);
         while (choices.size < this.n) {
             // return a random index
-            var selected = Math.floor(Math.random()*this.imgData.length);
+            var selected = Math.floor(Math.random() * this.imgData.length);
             // now we determine wheater to discard it
             const selected_pos_val = this.imgData[selected];
-            if (Math.random()*256<=selected_pos_val){
+            if (Math.random() * 256 <= selected_pos_val) {
                 // we choose it
                 // console.log(selected_pos_val);
-                choices.add([selected % this.width, Math.floor(selected / this.width)]);
+                choices.add({x: selected % this.width, y: Math.floor(selected / this.width)});
                 this.scaleDown(selected);
             }
             // else we dont care about this point

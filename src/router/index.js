@@ -1,7 +1,7 @@
 import Vue from "vue";
 import VueRouter from "vue-router";
 import Home from "../views/Home.vue";
-import ImageVoronoi from "../views/ImageVoronoi.vue";
+import IV from "../views/IV.vue";
 
 Vue.use(VueRouter);
 
@@ -12,9 +12,9 @@ const routes = [
     component: Home
   },
   {
-    path: "/imagevoronoi",
+    path: "/ImageVoronoi",
     name: "Image Voronoi",
-    component: ImageVoronoi
+    component: IV
   },
   {
     path: "/about",

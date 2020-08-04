@@ -1,108 +1,135 @@
 var Voronoi = require("voronoi")
-var inside = require('point-in-polygon');
+var classifyPoint = require('robust-point-in-polygon');
+var PrepImage = require("./ImageGradient.js");
+var ChoosePoint = require("./ChoosePoints.js");
+// const overlap_alpha = 0.73205080756;
 var i = 0;
 var j = 0;
-class ImageVoronoi {
-    constructor(width, height, sites) {
-        this.width = width;
-        this.height = height;
+class VoronoiDrawer {
+    constructor(canvas, num_sites) {
+        this.canvas = canvas;
+        this.width = canvas.width;
+        this.height = canvas.height;
+        this.num_sites = num_sites;
+    }
+
+    ComputeVoronoi() {
+        console.log("Start voronoi", window.performance.now());
+        const grad = new PrepImage(this.canvas);
+        var sob = grad.sobelFilter();
+        console.log("Gradient produced", window.performance.now());
+        var cp = new ChoosePoint(
+            sob,
+            this.canvas.width,
+            this.canvas.height,
+            this.num_sites
+        );
+        var pos = cp.pickPosition();
+        console.log("Sites picked", window.performance.now());
         const bbox = {
             xl: 0,
-            xr: width,
+            xr: this.width,
             yt: 0,
-            yb: height
+            yb: this.height
         };
         const voronoi = new Voronoi();
-        this.diagram = voronoi.compute(sites, bbox);
-        console.log(this.diagram.execTime);
+        this.diagram = voronoi.compute(pos, bbox);
+        console.log("Voronoi computed", window.performance.now());
     }
 
-    PolygonPoints() {
-        var cell_points = new Array();
-        this.cell_boundaries = [];
+    CellColors(imgdata, channel, rgb_amount) {
+        var cell_colors = [];
         for (i = 0; i < this.diagram.cells.length; i++) {
             var boundaries = new Array();
-            var min_x = this.width + 1;
-            var min_y = this.height + 1;
-            var max_x = -1;
-            var max_y = -1;
-            var current_cell_points = new Array();
-            // var edges = [];
-            for (j = 0; j < this.diagram.cells[i].halfedges.length; j++) {
-                const va = this.diagram.cells[i].halfedges[j].getStartpoint();
+            var min_x = this.width;
+            var min_y = this.height;
+            var max_x = 0;
+            var max_y = 0;
+            const edges = this.diagram.cells[i].halfedges;
+            for (j = 0; j < edges.length; j++) {
+                const va = edges[j].getStartpoint();
                 boundaries.push([va.x, va.y]);
-                // const vb = this.diagram.cells[i].halfedges[j].edge.vb;
-                // edges.push([va, vb]);
-                if (va.x < min_x) {
-                    min_x = va.x;
-                }
-                if (va.x > max_x) {
-                    max_x = va.x;
-                }
-                if (va.y < min_y) {
-                    min_y = va.y;
-                }
-                if (va.y > max_y) {
-                    max_y = va.y;
-                }
+                min_x = Math.min(va.x, min_x);
+                max_x = Math.max(va.x, max_x);
+                min_y = Math.min(va.y, min_y);
+                max_y = Math.max(va.y, max_y);
             }
-            // boundaries = this.OrientPolygon(edges);
-            this.cell_boundaries.push(boundaries);
-            for (var k = Math.floor(min_x); k <= Math.ceil(max_x); k++) {
-                for (j = Math.floor(min_y); j <= Math.ceil(max_y); j++) {
-                    if (inside([k, j], boundaries)) {
-                        current_cell_points.push([k, j]);
-                    }
-                }
-            }
-            cell_points.push(current_cell_points);
-        }
-        return cell_points;
-    }
-
-    CellColor(imgdata, cellpoints) {
-        var cell_colors = new Array();
-        // console.log(imgdata);
-        for (i = 0; i < cellpoints.length; i++) {
-            const pixel_pos = cellpoints[i];
             var r = 0;
             var g = 0;
             var b = 0;
-            // console.log(pixel_pos.length);
-            for (j = 0; j < pixel_pos.length; j++) {
-                var ind = pixel_pos[j][1] * this.width + pixel_pos[j][0];
-                r += imgdata[ind * 4];
-                g += imgdata[ind * 4 + 1];
-                b += imgdata[ind * 4 + 2];
+            var count = 0;
+            var inside = false;
+            for (var k = Math.floor(min_x); k <= Math.floor(max_x) && k < this.width; k++) {
+                for (j = Math.floor(min_y); j <= Math.floor(max_y) && j < this.height; j++) {
+                    if (classifyPoint(boundaries, [k, j]) != 1) {
+                        const ind = j * this.width + k;
+                        r += imgdata[ind * 4];
+                        g += imgdata[ind * 4 + 1];
+                        b += imgdata[ind * 4 + 2];
+                        count += 1;
+                        inside = true;
+                    }else if (inside){
+                        inside = false;
+                        break;
+                    }
+                }
             }
-            r /= pixel_pos.length;
-            g /= pixel_pos.length;
-            b /= pixel_pos.length;
-            cell_colors.push([Math.floor(r), Math.floor(g), Math.floor(b)]);
+            r /= count;
+            g /= count;
+            b /= count;
+            if (channel == 0) {
+                cell_colors.push([Math.floor(r), Math.floor(g), Math.floor(b)]);
+            } else if (channel == 1) {
+                cell_colors.push([Math.floor(r * rgb_amount / 100), Math.floor(g * (1 - rgb_amount / 100) / 2), Math.floor(b * (1 - rgb_amount / 100) / 2)]);
+            } else if (channel == 2) {
+                cell_colors.push([Math.floor(r * (1 - rgb_amount / 100) / 2), Math.floor(g * rgb_amount / 100), Math.floor(b * (1 - rgb_amount / 100) / 2)]);
+            } else {
+                cell_colors.push([Math.floor(r * (1 - rgb_amount / 100) / 2), Math.floor(g * (1 - rgb_amount / 100) / 2), Math.floor(b * rgb_amount / 100)]);
+            }
         }
         return cell_colors;
     }
 
-    FillVoronoi(canvas) {
-        const imgdata = canvas.getContext("2d").getImageData(0, 0, this.width, this.height).data;
-        const cellpoints = this.PolygonPoints();
-        const cellcolor = this.CellColor(imgdata, cellpoints);
-        var ctx = canvas.getContext("2d");
+
+    FillVoronoi(channel, clear = true, imgdata = this.canvas.getContext("2d").getImageData(0, 0, this.width, this.height).data, ifStroke = true, rgb_amount = 0) {
+        this.ComputeVoronoi();
+        const cellcolor = this.CellColors(imgdata, channel, rgb_amount);
+        console.log("Cell color determined", window.performance.now());
+        var ctx = this.canvas.getContext("2d");
+        if (clear) {
+            ctx.clearRect(0, 0, this.width, this.height);
+        }
         for (i = 0; i < cellcolor.length; i++) {
             const r = cellcolor[i][0];
             const g = cellcolor[i][1];
             const b = cellcolor[i][2];
             ctx.beginPath();
-            ctx.moveTo(this.cell_boundaries[i][0][0], this.cell_boundaries[i][0][1]);
-            for (j = 1; j < this.cell_boundaries[i].length; j++) {
-                ctx.lineTo(this.cell_boundaries[i][j][0], this.cell_boundaries[i][j][1]);
+            var va = this.diagram.cells[i].halfedges[0].getStartpoint();
+            ctx.moveTo(va.x, va.y);
+            for (j = 1; j < this.diagram.cells[i].halfedges.length; j++) {
+                va = this.diagram.cells[i].halfedges[j].getStartpoint();
+                ctx.lineTo(va.x, va.y);
             }
             ctx.closePath();
             ctx.fillStyle = 'rgb(' + r + ', ' + g + ', ' + b + ')';
-            // ctx.stroke();
+            if (ifStroke) {
+                ctx.strokeStyle = 'rgb(' + r + ', ' + g + ', ' + b + ')';
+                ctx.stroke();
+            }
             ctx.fill();
         }
+        console.log("Drawn", window.performance.now());
+    }
+
+    RGBVoronoi(rgb_amount) {
+        var ctx = this.canvas.getContext("2d");
+        ctx.globalCompositeOperation = 'lighter';
+        const imgdata = this.canvas.getContext("2d").getImageData(0, 0, this.width, this.height).data;
+        this.FillVoronoi(1, true, imgdata, false, rgb_amount);
+        this.FillVoronoi(2, false, imgdata, false, rgb_amount);
+        this.FillVoronoi(3, false, imgdata, false, rgb_amount);
+        ctx.globalCompositeOperation = 'source-over';
     }
 }
 
-module.exports = ImageVoronoi;
+module.exports = VoronoiDrawer;

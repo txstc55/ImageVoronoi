@@ -1,29 +1,60 @@
 <template>
   <div class="IV">
-    <h1>Image Voronoi</h1>
     <div id="input-icon" class="nav-wrapper light-bg">
-      <v-file-input
-        label="File input"
-        filled
-        type="file"
-        prepend-icon="mdi-camera"
-        @change="onFileChange($event)"
-      ></v-file-input>
       <div class="control-wrapper">
-        <label class="control-label">Number of Cites</label>
-        <input class="control-input control-number number" :value="num_sites" />
+        <v-file-input
+          class="text-input-light"
+          label="Upload"
+          flat
+          dense
+          dark
+          type="file"
+          prepend-icon="mdi-camera"
+          @change="onFileChange($event)"
+        ></v-file-input>
+        <label class="control-label"></label>
+      </div>
+      <div class="control-wrapper">
+        <label class="control-label">Cites</label>
+        <label class="control-input control-number number">{{ num_sites }}</label>
         <input
           class="control-input control-slider slider"
           type="range"
           v-model="num_sites"
-          min="50"
-          max="5000"
+          min="1"
+          max="100"
           @change="changeNumCite()"
           maxlength="2"
         />
       </div>
+      <div class="control-wrapper">
+        <label class="selection-label" for="fill-input">
+          <input
+            class="control-input checkbox"
+            type="checkbox"
+            id="fill-input"
+            :checked="ifRGB"
+            @change="changeMode()"
+          />Get High
+        </label>
+      </div>
+      <div class="control-wrapper">
+        <label class="control-label">Drug dosage</label>
+        <label class="control-input control-number number">{{ dosage }}</label>
+        <input
+          class="control-input control-slider slider"
+          type="range"
+          v-model="dosage"
+          min="0"
+          max="100"
+          @change="changeRGB()"
+          maxlength="2"
+        />
+      </div>
     </div>
-    <canvas id="canvas" ref="myCanvas" />
+    <div class="canvas-wrapper">
+      <canvas class="canvas" id="canvas" ref="myCanvas" />
+    </div>
   </div>
 </template>
 
@@ -31,9 +62,7 @@
 
 
 <script>
-import PrepImage from "@/voronoi/ImageGradient.js";
-import ChoosePoint from "@/voronoi/ChoosePoints.js";
-import ImageVoronoi from "@/voronoi/Voronoi.js";
+import VoronoiDrawer from "@/voronoi/Voronoi.js";
 export default {
   name: "ImageVoronoi",
   data: function() {
@@ -41,7 +70,9 @@ export default {
       canvas: null,
       img: null,
       sites: [],
-      num_sites: 1000
+      num_sites: 10,
+      ifRGB: false,
+      dosage: 0
     };
   },
   methods: {
@@ -56,82 +87,43 @@ export default {
     // function to draw the stored image file
     drawImg() {
       const ctx = this.canvas.getContext("2d");
-      this.img.onload = () => {
-        console.log("Image height:", this.img.height, "width:", this.img.width);
-        while (this.canvas.height != this.img.height) {
-          this.canvas.height = this.img.height;
-          this.canvas.width = this.img.width;
-        }
-        console.log(
-          "Canvas height:",
-          this.canvas.height,
-          "width:",
-          this.canvas.width
-        );
-        ctx.drawImage(this.img, 0, 0);
-        console.log(window.performance.now());
-        const grad = new PrepImage(this.canvas);
-        var sob = grad.sobelFilter();
-        console.log(window.performance.now());
-        // grad.display(tmp);
-        var cp = new ChoosePoint(
-          sob,
-          this.canvas.width,
-          this.canvas.height,
-          this.num_sites
-        );
-        var pos = cp.pickPosition();
-        console.log(window.performance.now());
-        var sites = [];
-        for (var i = 0; i < pos.length; i++) {
-          sites.push({ x: pos[i][0], y: pos[i][1] });
-        }
-        var iv = new ImageVoronoi(this.canvas.width, this.canvas.height, sites);
-        console.log(window.performance.now());
-        iv.FillVoronoi(this.canvas);
-      };
-    },
-
-    update() {
-      const ctx = this.canvas.getContext("2d");
-      console.log("Image height:", this.img.height, "width:", this.img.width);
       while (this.canvas.height != this.img.height) {
         this.canvas.height = this.img.height;
         this.canvas.width = this.img.width;
       }
-      console.log(
-        "Canvas height:",
-        this.canvas.height,
-        "width:",
-        this.canvas.width
-      );
       ctx.drawImage(this.img, 0, 0);
-      console.log(window.performance.now());
-      const grad = new PrepImage(this.canvas);
-      var sob = grad.sobelFilter();
-      console.log(window.performance.now());
-      // grad.display(tmp);
-      var cp = new ChoosePoint(
-        sob,
-        this.canvas.width,
-        this.canvas.height,
-        this.num_sites
-      );
-      var pos = cp.pickPosition();
-      console.log(window.performance.now());
-      var sites = [];
-      for (var i = 0; i < pos.length; i++) {
-        sites.push({ x: pos[i][0], y: pos[i][1] });
+      this.drawVoronoi();
+    },
+
+    drawVoronoi() {
+      var iv = new VoronoiDrawer(this.canvas, this.num_sites * 40);
+      if (this.ifRGB) {
+        iv.RGBVoronoi(this.dosage);
+      } else {
+        iv.FillVoronoi(0);
       }
-      var iv = new ImageVoronoi(this.canvas.width, this.canvas.height, sites);
-      console.log(window.performance.now());
-      iv.FillVoronoi(this.canvas);
+    },
+
+    updateImage() {
+      this.img.onload = () => {
+        this.drawImg();
+      };
+    },
+
+    updateSite() {
+      this.drawImg();
     },
 
     changeNumCite() {
-      console.log(this.num_sites);
+      console.log("Number of sites changed to", this.num_sites * 50);
       const self = this;
-      self.update();
+      self.updateSite();
+    },
+
+    changeRGB() {
+      if (this.ifRGB) {
+        this.drawImg();
+      }
     },
 
     // when the file is changed, preview the file
@@ -144,9 +136,14 @@ export default {
       reader.onload = e => {
         this.img = new Image();
         this.img.src = e.target.result;
-        self.drawImg();
+        self.updateImage();
       };
       reader.readAsDataURL(files);
+    },
+
+    changeMode() {
+      this.ifRGB = !this.ifRGB;
+      this.drawImg();
     }
   },
 
@@ -160,6 +157,19 @@ export default {
 
 
 <style>
+.IV {
+  background-color: #0f2031;
+}
+
+.mdi-camera::before {
+  color: #bbebd8;
+}
+
+.text-input-light .v-text-field__slot .v-label {
+  color: #bbebd8;
+  font-size: 13px;
+}
+
 #input-icon {
   text-align: center;
   padding-left: 2em;
@@ -197,11 +207,13 @@ a:hover {
   width: 100%;
 }
 .dark-bg {
-  background-color: #333;
+  color: #bbebd8;
+  background-color: ;
 }
 .light-bg {
-  background-color: #efefef;
-  border-bottom: 1px #ddd solid;
+  background-color: #0f2031;
+  border-bottom: 1px #3a7982 solid;
+  border-top: 1px #3a7982 solid;
 }
 .center {
   max-width: 860px;
@@ -212,7 +224,7 @@ a:hover {
   padding-top: 17px;
   padding-bottom: 17px;
   position: relative;
-  z-index: 3;
+  /* z-index: -1; */
 }
 .button {
   background-color: #ddd;
@@ -305,12 +317,23 @@ a:hover {
   width: 120px;
   margin-right: 20px;
 }
+.control-vinput {
+  max-height: 22px;
+  color: #bbebd8;
+}
 .control-label {
   max-width: 90px;
   float: left;
   display: block;
   font-size: 11px;
-  color: #222f37;
+  color: #bbebd8;
+}
+.selection-label {
+  max-width: 90px;
+  float: left;
+  display: block;
+  font-size: 15px;
+  color: #bbebd8;
 }
 .control-slider {
   display: block;
@@ -326,12 +349,14 @@ a:hover {
 }
 .control-number {
   display: block;
-  color: #333;
+  color: #bbebd8;
+  color: ;
   float: right;
   border: 0;
   max-width: 30px;
   font-family: sans-serif;
   background-color: transparent;
+  font-size: 11px;
 }
 #import-input {
   display: none;
@@ -399,7 +424,8 @@ a:hover {
   border-radius: 2px;
   font-family: sans-serif;
   font-size: 13px;
-  color: #333;
+  color: #bbebd8;
+  color: ;
   margin-right: 7px;
   position: relative;
   top: 1px;
@@ -434,8 +460,8 @@ a:hover {
 .canvas-wrapper {
   width: 100%;
   position: relative;
-  background-color: rgba(255, 255, 255, 0.9);
   line-height: 1.7;
+  padding-top: 3%;
 }
 #canvas {
   margin-left: auto;
