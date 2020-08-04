@@ -8,6 +8,7 @@
           flat
           dense
           dark
+          hide-details
           type="file"
           prepend-icon="mdi-camera"
           @change="onFileChange($event)"
@@ -170,6 +171,11 @@ export default {
   font-size: 13px;
 }
 
+.text-input-light .v-text-field__slot .v-file-input__text {
+  color: #bbebd8;
+  font-size: 13px;
+}
+
 #input-icon {
   text-align: center;
   padding-left: 2em;
@@ -270,42 +276,7 @@ a:hover {
   position: relative;
   top: 1px;
 }
-.intro {
-  width: 100%;
-  position: absolute;
-  top: -100%;
-  background-color: #fff;
-  background-color: rgba(255, 255, 255, 0.9);
-  -webkit-transition: all 0.5s ease-in;
-  transition: all 0.5s ease-in;
-}
-.intro.is-active {
-  top: 0;
-}
-.intro .center {
-  padding: 30px;
-  max-width: 580px;
-  position: relative;
-}
-.intro .close {
-  position: absolute;
-  top: 10px;
-  right: 10px;
-  display: block;
-  font-size: 16px;
-  background-color: transparent;
-  border: 0;
-  color: #06f;
-  cursor: pointer;
-}
-.intro-button {
-  float: right;
-}
-.intro-button.is-active,
-.intro-button.is-active:hover {
-  background-color: #ddd;
-  color: #666;
-}
+
 #controls {
   display: none;
 }
