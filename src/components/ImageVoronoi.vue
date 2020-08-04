@@ -99,8 +99,10 @@ export default {
     drawVoronoi() {
       var iv = new VoronoiDrawer(this.canvas, this.num_sites * 40);
       if (this.ifRGB) {
+        iv.num_sites = (this.num_sites * 20);
         iv.RGBVoronoi(this.dosage);
       } else {
+        iv.num_sites = this.num_sites * 40;
         iv.FillVoronoi(0);
       }
     },
