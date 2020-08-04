@@ -62,7 +62,7 @@
 
 
 <script>
-import VoronoiDrawer from "@/voronoi/Voronoi.js";
+import VoronoiDrawer from "@/voronoi/VoronoiDrawer.js";
 export default {
   name: "ImageVoronoi",
   data: function() {
