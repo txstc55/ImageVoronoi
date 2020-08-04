@@ -12,7 +12,7 @@ const routes = [
       import(/* webpackChunkName: "about" */ "../views/About.vue")
   },
   {
-    path: "/ImageVoronoi",
+    path: "/IV",
     name: "Image Voronoi",
     component: IV
   },
