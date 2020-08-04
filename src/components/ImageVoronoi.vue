@@ -81,7 +81,7 @@ export default {
       const src = require("@/assets/sample.jpg");
       this.img = new Image();
       this.img.src = src;
-      this.drawImg();
+      this.updateImage();
     },
 
     // function to draw the stored image file
