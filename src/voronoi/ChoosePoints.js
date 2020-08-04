@@ -6,7 +6,7 @@ class ChoosePoint {
         this.width = width;
         this.height = height;
         for (var i = 0; i < imgData.length; i += 4) {
-            this.imgData[i / 4] = imgData[i] + 1;
+            this.imgData[i / 4] = 256 - imgData[i] + 1;
         }
     }
 
@@ -40,7 +40,7 @@ class ChoosePoint {
             if (Math.random() * 256 <= selected_pos_val) {
                 // we choose it
                 // console.log(selected_pos_val);
-                choices.add({x: selected % this.width, y: Math.floor(selected / this.width)});
+                choices.add({ x: selected % this.width, y: Math.floor(selected / this.width) });
                 this.scaleDown(selected);
             }
             // else we dont care about this point
