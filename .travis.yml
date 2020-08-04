@@ -13,3 +13,7 @@ deploy:
  local_dir: dist
  on:
    branch: master
+
+env:
+  global:
+    secure: hash value
