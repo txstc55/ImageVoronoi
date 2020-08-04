@@ -23,15 +23,15 @@
       </div>
       <div class="column">
         <img src="../assets/sample2.jpeg" alt="Input Image 2" style="width:100%" />
-        <h2 class="intro">Original Image</h2>
+        <!-- <h2 class="intro">Original Image</h2> -->
       </div>
       <div class="column">
         <img src="../assets/sample2-voronoi.png" alt="Generated Image 2" style="width:100%" />
-        <h2 class="intro">Generated Image</h2>
+        <!-- <h2 class="intro">Generated Image</h2> -->
       </div>
       <div class="column">
         <img src="../assets/sample2-voronoi-high.png" alt="Generated Image with High Option" style="width:100%" />
-        <h2 class="intro">Get High</h2>
+        <!-- <h2 class="intro">Get High</h2> -->
       </div>
     </div>
     <div class="row"></div>
