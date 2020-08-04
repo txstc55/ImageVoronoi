@@ -45,7 +45,7 @@
 }
 
 .intro-box {
-  max-width: 40%;
+  max-width: 60%;
   text-align: center;
   margin: auto;
 }
