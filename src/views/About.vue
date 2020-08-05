@@ -6,7 +6,7 @@
       <h3 class="intro">
         An image voronoi experiment. Each voronoi region is filled with average color in that region.
         <br />With the get high option, three voronoi diagrams is computed. Each of the three puts different weight on RGB channel, which creates an illution of getting high. Although, generate such image will take some time.
-        <br />The inverse option is a inverse point picking method for voronoi, this will lead to a different set of voronoi points. This method generates better results for artificial images hwere there are clear borders while the original method is better for natural images.
+        <br />The inverse option is a inverse point picking(inverse PP) method for voronoi, this will lead to a different set of voronoi points. This method generates better results for artificial images hwere there are clear borders while the original method is better for natural images.
         <br />Hover over the images to have a better look!
       </h3>
       <br />
@@ -32,7 +32,7 @@
         />
       </div>
       <div class="column">
-        <h3 class="intro">Voronoi with inverse point picking</h3>
+        <h3 class="intro">Inverse PP Voronoi</h3>
         <br />
         <img
           class="sample-image"
@@ -41,7 +41,7 @@
         />
       </div>
       <div class="column">
-        <h3 class="intro">Getting high with inverse PP</h3>
+        <h3 class="intro">Inverse PP Get High</h3>
         <br />
         <img
           class="sample-image"
@@ -123,6 +123,7 @@
 .column {
   float: left;
   width: 20%;
+  max-height: 10%;
 }
 .row {
   padding-top: 0.5%;
