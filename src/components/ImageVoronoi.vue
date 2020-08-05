@@ -117,6 +117,7 @@ export default {
       this.drawVoronoi(fileChanged);
     },
 
+    // function to draw the voronoi
     drawVoronoi(fileChanged) {
       if (fileChanged) {
         this.iv = new VoronoiDrawer(
@@ -124,8 +125,6 @@ export default {
           this.num_sites * 40,
           this.inversePP
         );
-      } else {
-        this.iv.num_sites = this.num_sites * 40;
       }
       if (this.ifRGB) {
         this.iv.RGBVoronoi(this.dosage);
@@ -134,22 +133,27 @@ export default {
       }
     },
 
+    // update the image on cavas and perform voronoi
     updateImage() {
       this.img.onload = () => {
         this.drawImg(true);
       };
     },
 
+    // update the number of sites
     updateSite() {
+      this.iv.num_sites = this.num_sites * 40;
       this.drawImg(false);
     },
 
+    // when the slider changes, invoke update site
     changeNumCite() {
       console.log("Number of sites changed to", this.num_sites * 50);
       const self = this;
       self.updateSite();
     },
 
+    // when the slider for drug dose is changed, invoke
     changeRGB() {
       if (this.ifRGB) {
         this.drawImg(false);
@@ -171,14 +175,19 @@ export default {
       reader.readAsDataURL(files);
     },
 
+    // when the get high option is selected, invoke
     changeMode() {
       this.ifRGB = !this.ifRGB;
       this.drawImg(false);
     },
+
+    // when the point picking method is changed, invoke
     changePP() {
       this.inversePP = !this.inversePP;
       this.drawImg(false);
     },
+
+    // function to download the image
     downloadImage() {
       console.log("Save");
       this.canvas.toBlob(function(blob) {
