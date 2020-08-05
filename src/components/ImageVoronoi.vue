@@ -247,7 +247,7 @@ export default {
 }
 
 .output-button .v-btn__content {
-  color: rgb(128, 179, 162);
+  color: #c6dad3;
 }
 
 * {
