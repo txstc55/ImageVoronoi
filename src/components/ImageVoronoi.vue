@@ -454,6 +454,7 @@ a:hover {
   position: relative;
   line-height: 1.7;
   padding-top: 3%;
+  padding-bottom: 2%;
 }
 #canvas {
   margin-left: auto;
