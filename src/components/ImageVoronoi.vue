@@ -175,6 +175,15 @@ export default {
   mounted() {
     this.canvas = this.$refs.myCanvas;
     this.drawInit();
+    var ua = navigator.userAgent.toLowerCase();
+    if (ua.indexOf("safari") != -1) {
+      if (ua.indexOf("chrome") <= -1) {
+        let inputs = document.querySelectorAll(".v-file-input input");
+        [...inputs].forEach(input => {
+          input.remove();
+        });
+      }
+    }
   }
 };
 </script>
