@@ -39,9 +39,9 @@ class VoronoiDrawer {
     }
 
     isPointInPoly(poly, x, y) {
-        for (var c = false, i = -1, l = poly.length, j = l - 1; ++i < l; j = i)
-            ((poly[i].y <= y && y < poly[j].y) || (poly[j].y <= y && y < poly[i].y))
-                && (x < (poly[j].x - poly[i].x) * (y - poly[i].y) / (poly[j].y - poly[i].y) + poly[i].x)
+        for (var c = false, k = -1, l = poly.length, m = l - 1; ++k < l; m = k)
+            ((poly[k].y <= y && y < poly[m].y) || (poly[m].y <= y && y < poly[k].y))
+                && (x < (poly[m].x - poly[k].x) * (y - poly[k].y) / (poly[m].y - poly[k].y) + poly[k].x)
                 && (c = !c);
         return c;
     }
