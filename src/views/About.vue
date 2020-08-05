@@ -13,17 +13,14 @@
     </div>
     <div class="row">
       <div class="column">
-        <h3 class="intro">Original Image</h3>
         <br />
         <img class="sample-image" src="../assets/sample.jpg" alt="Original image" />
       </div>
       <div class="column">
-        <h3 class="intro">Generated Voronoi</h3>
         <br />
         <img class="sample-image" src="../assets/sample-voronoi.png" alt="Generated voronoi image" />
       </div>
       <div class="column">
-        <h3 class="intro">Getting High</h3>
         <br />
         <img
           class="sample-image"
@@ -32,7 +29,6 @@
         />
       </div>
       <div class="column">
-        <h3 class="intro">Inverse PP Voronoi</h3>
         <br />
         <img
           class="sample-image"
@@ -41,7 +37,6 @@
         />
       </div>
       <div class="column">
-        <h3 class="intro">Inverse PP Get High</h3>
         <br />
         <img
           class="sample-image"
@@ -78,9 +73,11 @@
       </div>
       <div class="column">
         <img class="sample-image" src="../assets/sample3.jpg" alt="Original image" />
+        <h3 class="intro">Original Image</h3>
       </div>
       <div class="column">
         <img class="sample-image" src="../assets/sample3-voronoi.png" alt="Generated voronoi image" />
+        <h3 class="intro">Generated Voronoi</h3>
       </div>
       <div class="column">
         <img
@@ -88,6 +85,7 @@
           src="../assets/sample3-voronoi-high.png"
           alt="Generated Image with High Option"
         />
+        <h3 class="intro">Getting High</h3>
       </div>
       <div class="column">
         <img
@@ -95,6 +93,7 @@
           src="../assets/sample3-voronoi-inverse.png"
           alt="Generated image with inverse point picking"
         />
+        <h3 class="intro">Inverse PP Voronoi</h3>
       </div>
       <div class="column">
         <img
@@ -102,6 +101,7 @@
           src="../assets/sample3-voronoi-inverse-high.png"
           alt="Generated image with inverse point picking and getting high"
         />
+        <h3 class="intro">Inverse PP Get High</h3>
       </div>
     </div>
     <div class="row"></div>
