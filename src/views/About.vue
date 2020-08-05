@@ -9,7 +9,6 @@
         <br />The inverse option is a inverse point picking(inverse PP) method for voronoi, this will lead to a different set of voronoi points. This method generates better results for artificial images hwere there are clear borders while the original method is better for natural images.
         <br />Hover over the images to have a better look!
       </h3>
-      <br />
     </div>
     <div class="row">
       <div class="column">
