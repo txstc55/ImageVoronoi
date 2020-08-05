@@ -62,6 +62,15 @@
           /> Inverse PP
         </label>
       </div>
+      <div class="control-wrapper">
+        <v-btn
+          small
+          class="output-button"
+          color="rgb(36, 77, 138)"
+          @click="downloadImage()"
+        >Download Image</v-btn>
+        <br />
+      </div>
     </div>
     <div class="canvas-wrapper">
       <canvas class="canvas" id="canvas" ref="myCanvas" />
@@ -74,6 +83,7 @@
 
 <script>
 import VoronoiDrawer from "@/voronoi/VoronoiDrawer.js";
+import saveAs from "file-saver";
 export default {
   name: "ImageVoronoi",
   data: function() {
@@ -168,6 +178,12 @@ export default {
     changePP() {
       this.inversePP = !this.inversePP;
       this.drawImg(false);
+    },
+    downloadImage() {
+      console.log("Save");
+      this.canvas.toBlob(function(blob) {
+        saveAs(blob, "out.png");
+      });
     }
   },
 
@@ -221,6 +237,10 @@ export default {
   max-height: 80em;
 }
 
+.output-button .v-btn__content {
+  color: rgb(128, 179, 162);
+}
+
 * {
   margin: 0;
   padding: 0;
@@ -244,10 +264,7 @@ a:hover {
 .full-width {
   width: 100%;
 }
-.dark-bg {
-  color: #bbebd8;
-  background-color: ;
-}
+
 .light-bg {
   background-color: #0f2031;
   border-bottom: 1px #3a7982 solid;
