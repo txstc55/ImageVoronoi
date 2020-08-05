@@ -1,12 +1,17 @@
 // let Chance = require("chance");
 class ChoosePoint {
-    constructor(imgData, width, height, n) {
+    constructor(imgData, width, height, n, inversePP) {
         this.imgData = new Array(width * height);
         this.n = n;
         this.width = width;
         this.height = height;
         for (var i = 0; i < imgData.length; i += 4) {
-            this.imgData[i / 4] = 256 - imgData[i] + 1;
+            this.imgData[i / 4] = imgData[i] + 1;
+        }
+        if (inversePP) {
+            for (i = 0; i < this.imgData.length; i++) {
+                this.imgData[i] = 257 - this.imgData[i];
+            }
         }
     }
 
@@ -20,7 +25,7 @@ class ChoosePoint {
             for (var j = x - radius; j <= x + radius; j++) {
                 if (i >= 0 && j >= 0 && j < this.width && i < this.height) {
                     var pos = i * this.width + j;
-                    this.imgData[pos] /= radius;
+                    this.imgData[pos] /= 2;
                 }
             }
         }

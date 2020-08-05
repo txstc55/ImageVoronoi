@@ -6,11 +6,12 @@ var ChoosePoint = require("./ChoosePoints.js");
 var i = 0;
 var j = 0;
 class VoronoiDrawer {
-    constructor(canvas, num_sites) {
+    constructor(canvas, num_sites, inversePP) {
         this.canvas = canvas;
         this.width = canvas.width;
         this.height = canvas.height;
         this.num_sites = num_sites;
+        this.inversePP = inversePP
     }
 
     ComputeVoronoi() {
@@ -22,7 +23,8 @@ class VoronoiDrawer {
             sob,
             this.canvas.width,
             this.canvas.height,
-            this.num_sites
+            this.num_sites,
+            this.inversePP
         );
         var pos = cp.pickPosition();
         console.log("Sites picked", window.performance.now());

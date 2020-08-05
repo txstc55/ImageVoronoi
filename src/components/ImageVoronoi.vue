@@ -8,7 +8,6 @@
           flat
           dense
           dark
-          hide-details
           type="file"
           prepend-icon="mdi-camera"
           @change="onFileChange($event)"
@@ -36,7 +35,7 @@
             id="fill-input"
             :checked="ifRGB"
             @change="changeMode()"
-          />Get High
+          /> Get High
         </label>
       </div>
       <div class="control-wrapper">
@@ -51,6 +50,17 @@
           @change="changeRGB()"
           maxlength="2"
         />
+      </div>
+      <div class="control-wrapper">
+        <label class="selection-label" for="fill-input">
+          <input
+            class="control-input checkbox"
+            type="checkbox"
+            id="fill-input"
+            :checked="inversePP"
+            @change="changePP()"
+          /> Inverse PP 
+        </label>
       </div>
     </div>
     <div class="canvas-wrapper">
@@ -73,6 +83,7 @@ export default {
       sites: [],
       num_sites: 10,
       ifRGB: false,
+      inversePP: false,
       dosage: 0
     };
   },
@@ -97,7 +108,7 @@ export default {
     },
 
     drawVoronoi() {
-      var iv = new VoronoiDrawer(this.canvas, this.num_sites * 40);
+      var iv = new VoronoiDrawer(this.canvas, this.num_sites * 40, this.inversePP);
       if (this.ifRGB) {
         iv.RGBVoronoi(this.dosage);
       } else {
@@ -144,6 +155,10 @@ export default {
 
     changeMode() {
       this.ifRGB = !this.ifRGB;
+      this.drawImg();
+    },
+    changePP() {
+      this.inversePP = !this.inversePP;
       this.drawImg();
     }
   },
