@@ -114,6 +114,8 @@ export default {
           this.num_sites * 40,
           this.inversePP
         );
+      } else {
+        this.iv.num_sites = this.num_sites * 40;
       }
       if (this.ifRGB) {
         this.iv.RGBVoronoi(this.dosage);
