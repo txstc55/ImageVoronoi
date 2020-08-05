@@ -217,8 +217,8 @@ export default {
 #canvas {
   justify-content: center;
   align-items: center;
-  max-width: 100%;
-  max-height: 100%;
+  max-width: 80%;
+  max-height: 80em;
 }
 
 * {
@@ -467,12 +467,7 @@ a:hover {
   padding-top: 3%;
   padding-bottom: 2%;
 }
-#canvas {
-  margin-left: auto;
-  margin-right: auto;
-  display: block;
-  max-width: 100%;
-}
+
 #cam-button {
   display: none;
 }
