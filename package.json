@@ -14,6 +14,7 @@
     "sobel": "0.0.11",
     "voronoi": "^1.0.0",
     "vue": "^2.6.11",
+    "vue-analytics": "^5.22.1",
     "vue-router": "^3.2.0",
     "vuetify": "^2.3.7",
     "vuex": "^3.4.0"
