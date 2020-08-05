@@ -1,8 +1,8 @@
 var Voronoi = require("voronoi")
 var classifyPoint = require('robust-point-in-polygon');
-var PrepImage = require("./ImageGradient.js");
 var ChoosePoint = require("./ChoosePoints.js");
-// const overlap_alpha = 0.73205080756;
+let Sobel = require('sobel');
+
 var i = 0;
 var j = 0;
 class VoronoiDrawer {
@@ -13,8 +13,8 @@ class VoronoiDrawer {
         this.num_sites = num_sites;
         this.inversePP = inversePP
         console.log("Start voronoi", window.performance.now());
-        const grad = new PrepImage(this.canvas);
-        this.sob = grad.sobelFilter();
+        const data = this.canvas.getContext("2d").getImageData(0, 0, this.width, this.height);
+        this.sob = Sobel(data);
         console.log("Gradient produced", window.performance.now());
     }
 

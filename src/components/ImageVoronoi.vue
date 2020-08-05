@@ -28,7 +28,7 @@
         />
       </div>
       <div class="control-wrapper">
-        <label class="selection-label" for="fill-input">
+        <label class="selection-label">
           <input
             class="control-input checkbox"
             type="checkbox"
@@ -52,7 +52,7 @@
         />
       </div>
       <div class="control-wrapper">
-        <label class="selection-label" for="fill-input">
+        <label class="selection-label">
           <input
             class="control-input checkbox"
             type="checkbox"
