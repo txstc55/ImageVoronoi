@@ -15,7 +15,7 @@
         <label class="control-label"></label>
       </div>
       <div class="control-wrapper">
-        <label class="control-label">Cites</label>
+        <label class="control-label">Sites</label>
         <label class="control-input control-number number">{{ num_sites }}</label>
         <input
           class="control-input control-slider slider"
@@ -59,7 +59,7 @@
             id="fill-input"
             :checked="inversePP"
             @change="changePP()"
-          /> Inverse PP 
+          /> Inverse PP
         </label>
       </div>
     </div>
@@ -97,33 +97,39 @@ export default {
     },
 
     // function to draw the stored image file
-    drawImg() {
+    drawImg(fileChanged) {
       const ctx = this.canvas.getContext("2d");
       while (this.canvas.height != this.img.height) {
         this.canvas.height = this.img.height;
         this.canvas.width = this.img.width;
       }
       ctx.drawImage(this.img, 0, 0);
-      this.drawVoronoi();
+      this.drawVoronoi(fileChanged);
     },
 
-    drawVoronoi() {
-      var iv = new VoronoiDrawer(this.canvas, this.num_sites * 40, this.inversePP);
+    drawVoronoi(fileChanged) {
+      if (fileChanged) {
+        this.iv = new VoronoiDrawer(
+          this.canvas,
+          this.num_sites * 40,
+          this.inversePP
+        );
+      }
       if (this.ifRGB) {
-        iv.RGBVoronoi(this.dosage);
+        this.iv.RGBVoronoi(this.dosage);
       } else {
-        iv.FillVoronoi(0);
+        this.iv.FillVoronoi(0);
       }
     },
 
     updateImage() {
       this.img.onload = () => {
-        this.drawImg();
+        this.drawImg(true);
       };
     },
 
     updateSite() {
-      this.drawImg();
+      this.drawImg(false);
     },
 
     changeNumCite() {
@@ -134,7 +140,7 @@ export default {
 
     changeRGB() {
       if (this.ifRGB) {
-        this.drawImg();
+        this.drawImg(false);
       }
     },
 
@@ -155,11 +161,11 @@ export default {
 
     changeMode() {
       this.ifRGB = !this.ifRGB;
-      this.drawImg();
+      this.drawImg(false);
     },
     changePP() {
       this.inversePP = !this.inversePP;
-      this.drawImg();
+      this.drawImg(false);
     }
   },
 

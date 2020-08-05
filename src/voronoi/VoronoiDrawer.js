@@ -12,15 +12,15 @@ class VoronoiDrawer {
         this.height = canvas.height;
         this.num_sites = num_sites;
         this.inversePP = inversePP
+        console.log("Start voronoi", window.performance.now());
+        const grad = new PrepImage(this.canvas);
+        this.sob = grad.sobelFilter();
+        console.log("Gradient produced", window.performance.now());
     }
 
     ComputeVoronoi() {
-        console.log("Start voronoi", window.performance.now());
-        const grad = new PrepImage(this.canvas);
-        var sob = grad.sobelFilter();
-        console.log("Gradient produced", window.performance.now());
         var cp = new ChoosePoint(
-            sob,
+            this.sob,
             this.canvas.width,
             this.canvas.height,
             this.num_sites,
