@@ -1,5 +1,4 @@
 var Voronoi = require("voronoi")
-var classifyPoint = require('robust-point-in-polygon');
 var ChoosePoint = require("./ChoosePoints.js");
 let Sobel = require('sobel');
 
@@ -39,6 +38,14 @@ class VoronoiDrawer {
         console.log("Voronoi computed", window.performance.now());
     }
 
+    isPointInPoly(poly, x, y) {
+        for (var c = false, i = -1, l = poly.length, j = l - 1; ++i < l; j = i)
+            ((poly[i].y <= y && y < poly[j].y) || (poly[j].y <= y && y < poly[i].y))
+                && (x < (poly[j].x - poly[i].x) * (y - poly[i].y) / (poly[j].y - poly[i].y) + poly[i].x)
+                && (c = !c);
+        return c;
+    }
+
     CellColors(imgdata, channel, rgb_amount) {
         var cell_colors = [];
         for (i = 0; i < this.diagram.cells.length; i++) {
@@ -50,7 +57,7 @@ class VoronoiDrawer {
             const edges = this.diagram.cells[i].halfedges;
             for (j = 0; j < edges.length; j++) {
                 const va = edges[j].getStartpoint();
-                boundaries.push([va.x, va.y]);
+                boundaries.push(va);
                 min_x = Math.min(va.x, min_x);
                 max_x = Math.max(va.x, max_x);
                 min_y = Math.min(va.y, min_y);
@@ -61,16 +68,16 @@ class VoronoiDrawer {
             var b = 0;
             var count = 0;
             var inside = false;
-            for (var k = Math.floor(min_x); k <= Math.floor(max_x) && k < this.width; k++) {
-                for (j = Math.floor(min_y); j <= Math.floor(max_y) && j < this.height; j++) {
-                    if (classifyPoint(boundaries, [k, j]) != 1) {
+            for (var k = Math.max(Math.floor(min_x), 0); k < Math.min(Math.floor(max_x + 1), this.width); k++) {
+                for (j = Math.max(Math.floor(min_y), 0); j < Math.min(Math.floor(max_y + 1), this.height); j++) {
+                    if (this.isPointInPoly(boundaries, k, j)) {
                         const ind = j * this.width + k;
                         r += imgdata[ind * 4];
                         g += imgdata[ind * 4 + 1];
                         b += imgdata[ind * 4 + 2];
                         count += 1;
                         inside = true;
-                    }else if (inside){
+                    } else if (inside) {
                         inside = false;
                         break;
                     }
