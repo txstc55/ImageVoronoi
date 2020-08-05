@@ -4,10 +4,13 @@
     <br />
     <div class="intro-box">
       <h3 class="intro">
-        An image voronoi experiment. Each voronoi region is filled with average color in that region.
+        An image voronoi experiment. Each voronoi region is filled with average color in that region. Click
+        <router-link to="/IV">Image Voronoi</router-link>to access the playground.
         <br />With the get high option, three voronoi diagrams is computed. Each of the three puts different weight on RGB channel, which creates an illution of getting high. Although, generate such image will take some time.
         <br />The inverse option is a inverse point picking(inverse PP) method for voronoi, this will lead to a different set of voronoi points. This method generates better results for artificial images hwere there are clear borders while the original method is better for natural images.
-        <br />Hover over the images to have a better look!
+        <br />
+        <br />Hover over the images to have a better look! The code is available at
+        <a href="https://github.com/txstc55/ImageVoronoi">github</a>.
       </h3>
     </div>
     <div class="row">
@@ -114,7 +117,7 @@
 }
 
 .intro-box {
-  max-width: 50%;
+  max-width: 55%;
   text-align: center;
   margin: auto;
 }
